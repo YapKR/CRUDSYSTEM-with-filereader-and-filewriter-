@@ -1,0 +1,357 @@
+package crudsystem;
+import java.io.*;
+import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.Iterator;
+
+class Student {
+    private final int studentID;
+    private final int age;
+    private final int year;
+    private final String firstName;
+    private final String middleName;
+    private final String lastName;
+    private final String dateOfBirth;
+    private final Course course;
+
+    Student(int studentid, int age, int year, String firstname, String middlename, String lastname,
+            String dateofbirth, Course course) {
+        this.studentID = studentid;
+        this.age = age;
+        this.year = year;
+        this.firstName = firstname;
+        this.middleName = middlename;
+        this.lastName = lastname;
+        this.dateOfBirth = dateofbirth;
+        this.course = course;
+    }
+
+    public int getStudentID() {
+        return studentID;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    @Override
+    public String toString() {
+        return studentID + " " + firstName + " " + middleName + " " + lastName + " " + dateOfBirth + " " + age
+                + " " + course + " " + year;
+
+    }
+
+}
+
+public class CRUDSYSTEM {
+    private static final String FILE_PATH = "students.txt";
+
+    public static void main(String[] args) {
+        int choice;
+        Scanner s = new Scanner(System.in);
+        Scanner s1 = new Scanner(System.in);
+        ArrayList<Student> obj = new ArrayList<Student>();
+        System.out.println("By: Kent Rafael M. Yap");
+        do {
+            boolean validChoiceInput = false;
+            choice = 0;
+            while (!validChoiceInput) {
+                try {
+                    System.out.println("1.Create");
+                    System.out.println("2.Display");
+                    System.out.println("3.Search");
+                    System.out.println("4.Delete");
+                    System.out.println("5.Update");
+                    System.out.println("6.Exit");
+                    System.out.print("Enter your choice: ");
+                    choice = s.nextInt();
+                    validChoiceInput = true;
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid input! Please enter a valid choice (numeric value): ");
+                    s.nextLine();
+                }
+            }
+
+            if (choice == 1) {
+                boolean validStudentIDInput = false;
+                int studentID = 0;
+                while (!validStudentIDInput) {
+                    try {
+                        System.out.print("Enter Student ID: ");
+                        studentID = s.nextInt();
+                        validStudentIDInput = true;
+                    } catch (InputMismatchException e) {
+                        System.out.println("Invalid input! Please enter a valid Student ID: ");
+                        s.nextLine();
+                    }
+                }
+                System.out.println("Student's name: ");
+                System.out.print("Enter student's first name: ");
+                String firstName = s1.nextLine();
+                System.out.print("Enter student's middle name: ");
+                String middleName = s1.nextLine();
+                System.out.print("Enter student's last name: ");
+                String lastName = s1.nextLine();
+                System.out.print("Enter Date of Birth: ");
+                String dateOfBirth = s1.nextLine();
+
+                boolean validAgeInput = false;
+                int age = 0;
+                while (!validAgeInput) {
+                    try {
+                        System.out.print("Enter Age: ");
+                        age = s.nextInt();
+                        validAgeInput = true;
+                    } catch (InputMismatchException e) {
+                        System.out.println("Invalid input! Please enter a valid age: ");
+                        s.nextLine();
+                    }
+                }
+
+                boolean validCourseIDInput = false;
+                int courseID = 0;
+                while (!validCourseIDInput) {
+                    try {
+                        System.out.print("Enter Course ID: ");
+                        courseID = s.nextInt();
+                        validCourseIDInput = true;
+                    } catch (InputMismatchException e) {
+                        System.out.println("Invalid input! Please enter a valid Course ID: ");
+                        s.nextLine();
+                    }
+                }
+
+                System.out.print("Enter Course Description: ");
+                String courseDescription = s1.nextLine();
+
+                boolean validYearInput = false;
+                int year = 0;
+                while (!validYearInput) {
+                    try {
+                        System.out.print("Enter Year: ");
+                        year = s.nextInt();
+                        validYearInput = true;
+                    } catch (InputMismatchException e) {
+                        System.out.println("Invalid input! Please enter a valid year: ");
+                        s.nextLine();
+                    }
+                }
+
+                Course course = new Course(courseID, courseDescription);
+                obj.add(new Student(studentID, age, year, firstName, middleName, lastName, dateOfBirth, course));
+                saveStudents(obj);
+            } else if (choice == 2) {
+            ArrayList<Student> students = readStudents();
+            if (students.isEmpty()) {
+                System.out.println("No students found!");
+            } else {
+                System.out.println("Student Details:");
+                System.out.println("--------------------------------------------");
+                System.out.format("%-10s %-15s %-15s %-15s %-15s %-4s %-15s %-5s\n", "ID", "First Name", "Middle Name",
+                        "Last Name", "Date of Birth", "Age", "Course", "Year");
+                System.out.println("--------------------------------------------");
+                for (Student st : students) {
+                    System.out.format("%-10s %-15s %-15s %-15s %-15s %-4s %-15s %-5s\n", st.getStudentID(),
+                            st.getFirstName(), st.getMiddleName(), st.getLastName(), st.getDateOfBirth(),
+                            st.getAge(), st.getCourse().getCourseDescription(), st.getYear());
+                }
+                System.out.println("--------------------------------------------");
+            }
+        }
+            
+            else if (choice == 3) {
+                ArrayList<Student> students = readStudents();
+                if (students.isEmpty()) {
+                    System.out.println("No students found!");
+                } else {
+                    System.out.println("Enter student name to search: ");
+                    String searchName = s1.nextLine().toLowerCase();
+                    boolean found = false;
+                    for (Student st : students) {
+                        if (st.getFirstName().toLowerCase().contains(searchName)
+                                || st.getMiddleName().toLowerCase().contains(searchName)
+                                || st.getLastName().toLowerCase().contains(searchName)) {
+                            System.out.println(st);
+                            found = true;
+                        }
+                    }
+                    if (!found) {
+                        System.out.println("No students found with name containing " + searchName + "!");
+                    }
+                }
+            } else if (choice == 4) {
+                System.out.print("Enter student ID to delete: ");
+                int deleteID = s.nextInt();
+                boolean removed = false;
+                ArrayList<Student> students = readStudents();
+                Iterator<Student> iter = students.iterator();
+                while (iter.hasNext()) {
+                    Student st = iter.next();
+                    if (st.getStudentID() == deleteID) {
+                        iter.remove();
+                        removed = true;
+                        System.out.println("Student with ID " + st.getStudentID() + " removed successfully.");
+                    }
+                }
+                if (!removed) {
+                    System.out.println("Student with ID " + deleteID + " not found!");
+                }
+                saveStudents(students);
+            } else if (choice == 5) {
+                System.out.print("Enter student ID to update: ");
+                int updateID = s.nextInt();
+                boolean updated = false;
+                ArrayList<Student> students = readStudents();
+                for (int i = 0; i < students.size(); i++) {
+                    Student st = students.get(i);
+                    if (st.getStudentID() == updateID) {
+                        boolean validStudentIDUpdatedInput = false;
+                        int updatedStudentID = 0;
+                        while (!validStudentIDUpdatedInput) {
+                            try {
+                                System.out.print("Enter updated Student ID: ");
+                                updatedStudentID = s.nextInt();
+                                validStudentIDUpdatedInput = true;
+                            } catch (InputMismatchException e) {
+                                System.out.println("Invalid input! Please enter a valid Student ID: ");
+                                s.nextLine();
+                            }
+                        }
+
+                        System.out.print("Enter updated first name: ");
+                        String updatedFirstName = s1.nextLine();
+                        System.out.print("Enter updated middle name: ");
+                        String updatedMiddleName = s1.nextLine();
+                        System.out.print("Enter updated last name: ");
+                        String updatedLastName = s1.nextLine();
+                        System.out.print("Enter updated date of birth: ");
+                        String updatedDateOfBirth = s1.nextLine();
+
+                        boolean validAgeUpdatedInput = false;
+                        int updatedAge = 0;
+                        while (!validAgeUpdatedInput) {
+                            try {
+                                System.out.print("Enter updated age: ");
+                                updatedAge = s.nextInt();
+                                validAgeUpdatedInput = true;
+                            } catch (InputMismatchException e) {
+                                System.out.println("Invalid input! Please enter a valid age: ");
+                                s.nextLine();
+                            }
+                        }
+
+                        boolean validCourseNumberUpdatedInput = false;
+                        int updatedCourseNumber = 0;
+                        while (!validCourseNumberUpdatedInput) {
+                            try {
+                                System.out.print("Enter updated course number: ");
+                                updatedCourseNumber = s.nextInt();
+                                validCourseNumberUpdatedInput = true;
+                            } catch (InputMismatchException e) {
+                                System.out.println("Invalid input! Please enter a valid course number: ");
+                                s.nextLine();
+                            }
+                        }
+
+                        System.out.print("Enter updated course description: ");
+                        String updatedCourseDescription = s1.nextLine();
+
+                        boolean validYearInputUpdated = false;
+                        int updatedYear = 0;
+                        while (!validYearInputUpdated) {
+                            try {
+                                System.out.print("Enter updated year: ");
+                                updatedYear = s.nextInt();
+                                validYearInputUpdated = true;
+                            } catch (InputMismatchException e) {
+                                System.out.println("Invalid input! Please enter a valid year: ");
+                                s.nextLine();
+                            }
+                        }
+
+                        Course updatedCourse = new Course(updatedCourseNumber, updatedCourseDescription);
+                        students.set(i,
+                                new Student(updatedStudentID, updatedAge, updatedYear, updatedFirstName,
+                                        updatedMiddleName, updatedLastName, updatedDateOfBirth, updatedCourse));
+                        updated = true;
+                    }
+                }
+
+                if (!updated) {
+                    System.out.println("Student with ID " + updateID + " not found!");
+                }
+                saveStudents(students);
+            } else if (choice == 6) {
+                System.out.println("Exiting program...");
+                System.exit(0);
+            } else {
+                System.out.println("Invalid choice!");
+            }
+        } while (choice != 0);
+
+    }
+
+    public static void saveStudents(ArrayList<Student> students) {
+        try (FileWriter writer = new FileWriter("students.txt")) {
+            for (Student student : students) {
+                writer.write(student.getStudentID() + "?" + student.getAge() + "?" + student.getYear() + "?"
+                        + student.getFirstName() + "?" + student.getMiddleName() + "?" + student.getLastName() + "?"
+                        + student.getDateOfBirth() + "?" + student.getCourse().getCourseNumber() + "?"
+                        + student.getCourse().getCourseDescription() + "\n");
+            }
+            System.out.println("Students saved successfully!");
+        } catch (IOException e) {
+            System.out.println("An error occurred while saving students: " + e.getMessage());
+        }
+    }
+
+public static ArrayList<Student> readStudents() {
+    ArrayList<Student> students = new ArrayList<>();
+    try (FileReader reader = new FileReader("students.txt"); BufferedReader br = new BufferedReader(reader)) {
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split("\\?");
+            int studentID = Integer.parseInt(parts[0]);
+            int age = Integer.parseInt(parts[1]);
+            int year = Integer.parseInt(parts[2]);
+            String firstName = parts[3];
+            String middleName = parts[4];
+            String lastName = parts[5];
+            String dateOfBirth = parts[6];
+            int courseNumber = Integer.parseInt(parts[7]);
+            String courseDescription = parts[8];
+
+            Course course = new Course(courseNumber, courseDescription);
+            students.add(new Student(studentID, age, year, firstName, middleName, lastName, dateOfBirth, course));
+        }
+    } catch (IOException e) {
+        System.out.println("An error occurred while reading students: " + e.getMessage());
+    }
+    return students;
+    }
+}
