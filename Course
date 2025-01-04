@@ -1,0 +1,33 @@
+package crudsystem;
+
+
+public class Course {
+    private int courseNumber;
+    private String courseDescription;
+    
+    public Course(int coursenumber, String coursedescription){
+        this.courseNumber = coursenumber;
+        this.courseDescription = coursedescription;
+    }
+    
+    public int getCourseNumber(){
+        return courseNumber;
+    }
+    
+    public void setCourseNumber(int coursenumber){
+        this.courseNumber = coursenumber;
+    }
+    
+    public String getCourseDescription(){
+        return courseDescription;
+    }
+    
+    public void setCourseDescription(String coursedescription){
+        this.courseDescription = coursedescription;
+    }
+    
+    @Override
+    public String toString(){
+        return "\nCourse Number: " + courseNumber + "\nCourse Description: " + courseDescription;
+    }
+}
